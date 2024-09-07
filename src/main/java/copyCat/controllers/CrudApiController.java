@@ -57,9 +57,9 @@ public class CrudApiController {
     }
 
     @PutMapping(REST_MOCK_SUFFIX)
-    public ResponseEntity<String> replaceMock(@RequestBody RestMock apiMock) {
+    public ResponseEntity<String> replaceMock(@PathVariable UUID id, @RequestBody RestMock apiMock) {
         try {
-            apiService.updateApi(apiMock.id(), apiMock);
+            apiService.updateApi(id, apiMock);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (DataBaseOperationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

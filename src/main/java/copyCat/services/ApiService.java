@@ -55,12 +55,14 @@ public class ApiService {
     public void updateApi(UUID id, ApiMock apiMock) throws DataBaseOperationException {
         try {
             validate(apiMock);
-            if (isMockExists(apiMock)) {
+            if (DB.selectById(id).isPresent()) {
                 if (apiMock instanceof RestMock) {
                     DB.update(id, new RestMock.Builder().from(apiMock).id(id).build());
                 } else {
-                    throw new DataBaseOperationException("Failed to update ApiMock with id: %s, Error: ApiMock is not exists".formatted(id));
+                    // todo: implement graphQl mock api option in the future
                 }
+            } else {
+                throw new DataBaseOperationException("Failed to update ApiMock with id: %s, Error: ApiMock is not exists".formatted(id));
             }
         } catch (InvalidMockCreation e) {
             throw new DataBaseOperationException("Failed to update ApiMock with id: %s, Error: %s".formatted(id, e.toString()));
