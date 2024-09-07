@@ -4,6 +4,7 @@ import copyCat.entities.ApiMock;
 import copyCat.entities.RestMock;
 import copyCat.utils.exceptions.DataBaseOperationException;
 import copyCat.services.ApiService;
+import copyCat.utils.exceptions.InvalidMockCreation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
@@ -51,7 +52,7 @@ public class CrudApiController {
         try {
             apiService.addApi(apiMock);
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (DataBaseOperationException e) {
+        } catch (DataBaseOperationException | InvalidMockCreation e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString());
         }
     }
@@ -61,7 +62,7 @@ public class CrudApiController {
         try {
             apiService.updateApi(id, apiMock);
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (DataBaseOperationException e) {
+        } catch (DataBaseOperationException | InvalidMockCreation e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }

@@ -38,34 +38,24 @@ public class ApiService {
                 .findFirst();
     }
 
-    public void addApi(ApiMock apiMock) throws DataBaseOperationException {
-
-        try {
-            validate(apiMock);
-            if (!isMockExists(apiMock)) {
-                DB.insert(apiMock);
-            } else {
-                throw new DataBaseOperationException("Failed to add new ApiMock, Error: ApiMock is already exists");
-            }
-        } catch (InvalidMockCreation e) {
-            throw new DataBaseOperationException("Failed to add new ApiMock, Error: %s".formatted(e.toString()));
+    public void addApi(ApiMock apiMock) throws DataBaseOperationException, InvalidMockCreation {
+        validate(apiMock);
+        if (isMockExists(apiMock)) {
+            throw new DataBaseOperationException("Failed to add new ApiMock, Error: ApiMock is already exists");
         }
+        DB.insert(apiMock);
     }
 
-    public void updateApi(UUID id, ApiMock apiMock) throws DataBaseOperationException {
-        try {
-            validate(apiMock);
-            if (DB.selectById(id).isPresent()) {
-                if (apiMock instanceof RestMock) {
-                    DB.update(id, new RestMock.Builder().from(apiMock).id(id).build());
-                } else {
-                    // todo: implement graphQl mock api option in the future
-                }
-            } else {
-                throw new DataBaseOperationException("Failed to update ApiMock with id: %s, Error: ApiMock is not exists".formatted(id));
-            }
-        } catch (InvalidMockCreation e) {
-            throw new DataBaseOperationException("Failed to update ApiMock with id: %s, Error: %s".formatted(id, e.toString()));
+    public void updateApi(UUID id, ApiMock apiMock) throws DataBaseOperationException, InvalidMockCreation {
+        validate(apiMock);
+        if (DB.selectById(id).isEmpty()) {
+            throw new DataBaseOperationException("Failed to update ApiMock with id: %s, Error: ApiMock is not exists".formatted(id));
+        }
+
+        if (apiMock instanceof RestMock) {
+            DB.update(id, new RestMock.Builder().from(apiMock).id(id).build());
+        } else {
+            // todo: implement graphQl mock api option in the future
         }
     }
 
