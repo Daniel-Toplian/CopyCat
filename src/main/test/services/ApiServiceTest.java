@@ -7,6 +7,7 @@ import copyCat.entities.RestMock;
 import copyCat.entities.Role;
 import copyCat.services.ApiService;
 import copyCat.utils.exceptions.DataBaseOperationException;
+import copyCat.utils.exceptions.InvalidMockCreation;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -93,14 +94,14 @@ public class ApiServiceTest {
     }
 
     @Test
-    void testAddNewApiMock() throws DataBaseOperationException {
+    void testAddNewApiMock() throws DataBaseOperationException, InvalidMockCreation {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         apiService.addApi(apiMock);
         verify(mockRepository, times(1)).insert(apiMock);
     }
 
     @Test
-    void testAddNewApiMockWithUpperCaseRole() throws DataBaseOperationException {
+    void testAddNewApiMockWithUpperCaseRole() throws DataBaseOperationException, InvalidMockCreation {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         ApiMock newMock = new RestMock.Builder().from(apiMock).role(Role.SERVER.toString().toUpperCase()).build();
         apiService.addApi(newMock);
@@ -108,7 +109,7 @@ public class ApiServiceTest {
     }
 
     @Test
-    void testAddNewApiMockWithLowerCaseHttpMethod() throws DataBaseOperationException {
+    void testAddNewApiMockWithLowerCaseHttpMethod() throws DataBaseOperationException, InvalidMockCreation {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         ApiMock newMock = new RestMock.Builder().from(apiMock).httpMethod("get").build();
         apiService.addApi(newMock);
@@ -116,7 +117,7 @@ public class ApiServiceTest {
     }
 
     @Test
-    void testAddNewApiMockWithSameUrlButDifferentRole() throws DataBaseOperationException {
+    void testAddNewApiMockWithSameUrlButDifferentRole() throws DataBaseOperationException, InvalidMockCreation {
         when(mockRepository.selectAll()).thenReturn(List.of(apiMock));
 
         UUID newId = UUID.randomUUID();
@@ -128,28 +129,28 @@ public class ApiServiceTest {
     @Test
     void testAddNullApiMock() {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
-        assertThrows(DataBaseOperationException.class, () -> apiService.addApi(null));
+        assertThrows(InvalidMockCreation.class, () -> apiService.addApi(null));
     }
 
     @Test
     void testAddApiMockWithUnrecognizedRole() {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         ApiMock newMock = new RestMock.Builder().from(apiMock).role("unrecognizedRole").build();
-        assertThrows(DataBaseOperationException.class, () -> apiService.addApi(newMock));
+        assertThrows(InvalidMockCreation.class, () -> apiService.addApi(newMock));
     }
 
     @Test
     void testAddApiMockWithUnrecognizedHttpMethod() {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         ApiMock newMock = new RestMock.Builder().from(apiMock).httpMethod("unrecognizedMethod").build();
-        assertThrows(DataBaseOperationException.class, () -> apiService.addApi(newMock));
+        assertThrows(InvalidMockCreation.class, () -> apiService.addApi(newMock));
     }
 
     @Test
     void testAddApiMockWithEmptyUrl() {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         ApiMock newMock = new RestMock.Builder().from(apiMock).url("").build();
-        assertThrows(DataBaseOperationException.class, () -> apiService.addApi(newMock));
+        assertThrows(InvalidMockCreation.class, () -> apiService.addApi(newMock));
     }
 
     @Test
@@ -173,7 +174,7 @@ public class ApiServiceTest {
     }
 
     @Test
-    void testUpdateWithExistingApiMock() throws DataBaseOperationException {
+    void testUpdateWithExistingApiMock() throws DataBaseOperationException, InvalidMockCreation {
         ApiMock updatedMock = new RestMock.Builder().from(apiMock).body("update test").build();
         when(mockRepository.selectById(mockId)).thenReturn(Optional.of(updatedMock));
         apiService.updateApi(mockId, updatedMock);
