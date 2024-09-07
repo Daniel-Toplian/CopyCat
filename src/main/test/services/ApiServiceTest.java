@@ -1,6 +1,7 @@
 package services;
 
 import copyCat.dao.EntityDao;
+import copyCat.dao.MockRepository;
 import copyCat.entities.ApiMock;
 import copyCat.entities.RestMock;
 import copyCat.entities.Role;
@@ -66,6 +67,20 @@ public class ApiServiceTest {
         Optional<ApiMock> result = apiService.getById(mockId);
         assertTrue(result.isPresent());
         assertEquals(result.get().id(), mockId);
+    }
+
+    @Test
+    void testGetMockByUrl(){
+        when(mockRepository.selectAll()).thenReturn(List.of(apiMock));
+        Optional<ApiMock> result = apiService.getByUrl(apiMock.url());
+        assertEquals(apiMock, result.get());
+    }
+
+    @Test
+    void testGetMockByUrlWithNoMatch(){
+        when(mockRepository.selectAll()).thenReturn(List.of(apiMock));
+        Optional<ApiMock> result = apiService.getByUrl("randomUrl");
+        assertTrue(result.isEmpty());
     }
 
     @Test
