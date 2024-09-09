@@ -5,6 +5,8 @@ import copyCat.entities.RestMock;
 import copyCat.utils.exceptions.DataBaseOperationException;
 import copyCat.services.ApiService;
 import copyCat.utils.exceptions.InvalidMockCreation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import static copyCat.utils.Constants.BASE_ROUTE;
 @Primary
 @RequestMapping(path = BASE_ROUTE)
 public class CrudApiController {
+    private final Logger LOGGER = LogManager.getLogger(CrudApiController.class);
     private final String REST_MOCK_SUFFIX = "rest";
     private final String GRAPH_QL_MOCK_SUFFIX = "graphql";
     private final String BASE_ROUTE_SUFFIX = "apiMock";
