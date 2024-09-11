@@ -36,16 +36,19 @@ public class CrudApiController {
 
     @GetMapping("apiMocks")
     public ResponseEntity<List<ApiMock>> getAllMocks() {
+        LOGGER.trace("Received getAllMocks request");
         return ResponseEntity.status(HttpStatus.OK).body(apiService.getAll());
     }
 
     @GetMapping(BASE_ROUTE_SUFFIX + "/{id}")
     public ResponseEntity<Optional<ApiMock>> getMockById(@PathVariable UUID id) {
+        LOGGER.trace("Received getMockById request for id: %s".formatted(id));
         return ResponseEntity.status(HttpStatus.OK).body(apiService.getById(id));
     }
 
     @DeleteMapping(BASE_ROUTE_SUFFIX + "/{id}")
     public ResponseEntity<Void> deleteMock(@PathVariable UUID id) {
+        LOGGER.debug("Received deleteMock request for id: %s".formatted(id));
         apiService.deleteApi(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -53,9 +56,11 @@ public class CrudApiController {
     @PostMapping(REST_MOCK_SUFFIX)
     public ResponseEntity<String> addMock(@RequestBody RestMock apiMock) {
         try {
+            LOGGER.info("Received new MockApi with the following data: %s".formatted(apiMock.toString())); // check if it prints well or parsing to json is needed
             apiService.addApi(apiMock);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (DataBaseOperationException | InvalidMockCreation e) {
+            LOGGER.error("Failed to add new ApiMock, Error: %s".formatted(e.getMessage()));
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString());
         }
     }
@@ -63,9 +68,11 @@ public class CrudApiController {
     @PutMapping(REST_MOCK_SUFFIX)
     public ResponseEntity<String> replaceMock(@PathVariable UUID id, @RequestBody RestMock apiMock) {
         try {
+            LOGGER.info("Received update for id: %s with the following data: %s".formatted(id, apiMock.toString())); // check if it prints well or parsing to json is needed
             apiService.updateApi(id, apiMock);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (DataBaseOperationException | InvalidMockCreation e) {
+            LOGGER.error("Failed to update ApiMock with id: %s, Error: %s".formatted(id, e.getMessage()));
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }

@@ -44,9 +44,10 @@ public class ApiService {
     public void addApi(ApiMock apiMock) throws DataBaseOperationException, InvalidMockCreation {
         validate(apiMock);
         if (isMockExists(apiMock)) {
-            throw new DataBaseOperationException("Failed to add new ApiMock, Error: ApiMock is already exists");
+            throw new DataBaseOperationException("ApiMock is already exists");
         }
         DB.insert(apiMock);
+        LOGGER.debug("New MockApi was added successfully");
     }
 
     public void updateApi(UUID id, ApiMock apiMock) throws DataBaseOperationException, InvalidMockCreation {
@@ -60,6 +61,7 @@ public class ApiService {
         } else {
             // todo: implement graphQl mock api option in the future
         }
+        LOGGER.debug("Update process for MockApi with id: %s, was added successfully".formatted(id));
     }
 
     private boolean isMockExists(ApiMock apiMock) {
@@ -72,6 +74,7 @@ public class ApiService {
 
     public void deleteApi(UUID id) {
         DB.remove(id);
+        LOGGER.debug("MockApi with id: %s was deleted successfully".formatted(id));
     }
 
     private void validate(ApiMock mock) throws InvalidMockCreation {

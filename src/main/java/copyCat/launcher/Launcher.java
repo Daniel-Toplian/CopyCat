@@ -36,10 +36,20 @@ public class Launcher {
             LOGGER.info("Loading properties from: %s".formatted(configPath));
             Properties properties = new Properties();
             properties.load(new FileInputStream(configFile));
+            logProperties(properties, configPath);
             configPromise.tryComplete(properties);
         } catch (IOException e) {
             configPromise.tryFail("Exception in loading properties from: %s. Error: %s".formatted(configPath, e.getMessage()));
         }
         return configPromise.future();
+    }
+
+    private void logProperties(Properties properties, String configPath){
+        StringBuilder propertiesLog = new StringBuilder();
+        propertiesLog.append("Loaded with the following properties from: %s \n".formatted(configPath));
+        properties.forEach((key,value) -> propertiesLog.append(key).append(" = ").append(value).append("\n"));
+        propertiesLog.append("---------------------------------------------- \n");
+
+        LOGGER.info(propertiesLog.toString());
     }
 }

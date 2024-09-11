@@ -3,8 +3,6 @@
 
     <Properties>
         <Property name="logPattern">%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5level [%c{1.}] %msg%n</Property>
-        <Property name="logFileName">logs/copycat.log</Property>
-        <Property name="logFilePattern">logs/copycat-%d{yyyy-MM-dd}.log</Property>
     </Properties>
 
     <Appenders>
@@ -12,19 +10,28 @@
             <PatternLayout pattern="${logPattern}"/>
         </Console>
 
-        <RollingFile name="FileLogger" fileName="${logFileName}" filePattern="${logFilePattern}">
-            <PatternLayout pattern="${logPattern}"/>
+        <RollingFile name="fileLogger"
+                     fileName="logs/app%d{yyyy-MM-dd}.log"
+                     filePattern="logs/app-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <PatternLayout pattern="${logPattern}"/>
+            </PatternLayout>
             <Policies>
-                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
-                <SizeBasedTriggeringPolicy size="10MB"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="10MB" />
             </Policies>
+            <DefaultRolloverStrategy max="10">
+                <Delete basePath="logs/" maxDepth="10">
+                    <IfLastModified age="30d" />
+                </Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
-    </Appenders>K
+    </Appenders>
 
     <Loggers>
         <Root level="info">
             <AppenderRef ref="Console"/>
-            <AppenderRef ref="FileLogger"/>
+            <appenderRef ref="fileLogger" />
         </Root>
     </Loggers>
 </Configuration>
