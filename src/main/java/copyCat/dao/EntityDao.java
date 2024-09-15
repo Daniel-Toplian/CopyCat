@@ -6,9 +6,9 @@ import java.util.UUID;
 
 public interface EntityDao<T> {
 
-    void insert(T item);
+    T insert(T item);
 
-    void update(UUID id, T item);
+    T update(UUID id, T item);
 
     void remove(UUID item);
 

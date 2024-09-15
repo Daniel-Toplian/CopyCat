@@ -4,8 +4,8 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>CopyCat</groupId>
-    <artifactId>spring-boot-app</artifactId>
+    <groupId>Toplian</groupId>
+    <artifactId>copyCat-app</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 

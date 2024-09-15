@@ -1,11 +1,11 @@
 package services;
 
 import copyCat.dao.EntityDao;
-import copyCat.dao.MockRepository;
 import copyCat.entities.ApiMock;
 import copyCat.entities.RestMock;
 import copyCat.entities.Role;
 import copyCat.services.ApiService;
+import copyCat.services.RequestSchedulerService;
 import copyCat.utils.exceptions.DataBaseOperationException;
 import copyCat.utils.exceptions.InvalidMockCreation;
 import org.junit.jupiter.api.AfterAll;
@@ -16,7 +16,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpMethod;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -25,10 +28,10 @@ public class ApiServiceTest {
 
     @Mock
     private EntityDao<ApiMock> mockRepository;
-
+    @Mock
+    private RequestSchedulerService schedulerService;
     @InjectMocks
     private ApiService apiService;
-
     private ApiMock apiMock;
     private UUID mockId;
 

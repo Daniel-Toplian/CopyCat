@@ -3,7 +3,6 @@ package copyCat.entities;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpMethod;
 
-import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,10 +12,10 @@ public record RestMock(@JsonProperty("id") UUID id,
                        @JsonProperty("url") String url,
                        @JsonProperty("response") String response,
                        @JsonProperty("body") String body,
-                       @JsonProperty("triggerDate") Optional<Date> triggerDate,
                        @JsonProperty("periodicTrigger") Optional<Long> periodicTrigger,
                        @JsonProperty("role") String role,
-                       @JsonProperty("statusCode") int statusCode) implements ApiMock {
+                       @JsonProperty("statusCode") int statusCode,
+                       @JsonProperty("destination")Optional<HostAndPort> destination) implements ApiMock {
 
     @Override
     public String Name() {
@@ -44,11 +43,6 @@ public record RestMock(@JsonProperty("id") UUID id,
     }
 
     @Override
-    public Optional<Date> triggerDate() {
-        return triggerDate;
-    }
-
-    @Override
     public Optional<Long> periodicTrigger() {
         return periodicTrigger;
     }
@@ -63,9 +57,14 @@ public record RestMock(@JsonProperty("id") UUID id,
         return statusCode;
     }
 
+    @Override
+    public Optional<HostAndPort> destination(){
+        return destination;
+    }
+
     public static class Builder {
-        private Optional<Date> triggerDate = Optional.empty();
         private Optional<Long> periodicTrigger = Optional.empty();
+        private Optional<HostAndPort> destination;
         private String httpMethod;
         private String response;
         private int statusCode;
@@ -110,13 +109,13 @@ public record RestMock(@JsonProperty("id") UUID id,
             return this;
         }
 
-        public Builder triggerDate(Optional<Date> date) {
-            this.triggerDate = date;
+        public Builder periodicTrigger(Optional<Long> periodicTrigger) {
+            this.periodicTrigger = periodicTrigger;
             return this;
         }
 
-        public Builder periodicTrigger(Optional<Long> periodicTrigger) {
-            this.periodicTrigger = periodicTrigger;
+        public Builder destination(Optional<HostAndPort> destination) {
+            this.destination = destination;
             return this;
         }
 
@@ -151,7 +150,7 @@ public record RestMock(@JsonProperty("id") UUID id,
                 this.role = Role.SERVER.toString();
             }
 
-            return new RestMock(id, name, httpMethod, url, response, body, triggerDate, periodicTrigger, role, statusCode);
+            return new RestMock(id, name, httpMethod, url, response, body, periodicTrigger, role, statusCode, destination);
         }
 
         public Builder from(ApiMock mock) {
@@ -161,9 +160,9 @@ public record RestMock(@JsonProperty("id") UUID id,
                      .url(mock.url())
                      .response(mock.response())
                      .body(mock.body())
-                     .triggerDate(mock.triggerDate())
                      .periodicTrigger(mock.periodicTrigger())
                      .role(mock.role())
+                     .destination(mock.destination())
                      .statusCode(mock.statusCode());
         }
     }

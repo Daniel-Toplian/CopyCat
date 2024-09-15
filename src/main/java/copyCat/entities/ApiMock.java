@@ -1,7 +1,6 @@
 package copyCat.entities;
 
 
-import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,11 +17,11 @@ public interface ApiMock {
 
     String body();
 
-    Optional<Date> triggerDate();
-
     Optional<Long> periodicTrigger(); // in milliseconds
 
     String role();
 
     int statusCode();
+
+    Optional<HostAndPort> destination();
 }

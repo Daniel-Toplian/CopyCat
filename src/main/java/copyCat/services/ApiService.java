@@ -21,10 +21,12 @@ import java.util.UUID;
 public class ApiService {
     private final Logger LOGGER = LogManager.getLogger(ApiService.class);
     private final EntityDao<ApiMock> DB;
+    private final RequestSchedulerService schedulerService;
 
     @Autowired
-    public ApiService(EntityDao<ApiMock> repository) {
-        this.DB = repository;
+    public ApiService(EntityDao<ApiMock> DB, RequestSchedulerService schedulerService) {
+        this.DB = DB;
+        this.schedulerService = schedulerService;
     }
 
     public List<ApiMock> getAll() {
@@ -46,7 +48,12 @@ public class ApiService {
         if (isMockExists(apiMock)) {
             throw new DataBaseOperationException("ApiMock is already exists");
         }
-        DB.insert(apiMock);
+        if (isApiRequestPeriodic(apiMock)) {
+            schedulerService.startPeriodicRequest(DB.insert(apiMock));
+        } else {
+            DB.insert(apiMock);
+        }
+
         LOGGER.debug("New MockApi was added successfully");
     }
 
@@ -57,11 +64,33 @@ public class ApiService {
         }
 
         if (apiMock instanceof RestMock) {
-            DB.update(id, new RestMock.Builder().from(apiMock).id(id).build());
+            if (isApiRequestPeriodic(apiMock)) {
+                schedulerService.startPeriodicRequest(DB.update(id, new RestMock.Builder().from(apiMock).id(id).build()));
+            } else {
+                DB.update(id, new RestMock.Builder().from(apiMock).id(id).build());
+            }
         } else {
-            // todo: implement graphQl mock api option in the future
+            // Todo: implement graphQl mock api option in the future
         }
         LOGGER.debug("Update process for MockApi with id: %s, was added successfully".formatted(id));
+    }
+
+    public void deleteApi(UUID id) {
+        DB.remove(id);
+        schedulerService.cancelPeriodicRequest(id);
+        LOGGER.debug("MockApi with id: %s was deleted successfully".formatted(id));
+    }
+
+    public void startPeriodicRequest(UUID id) {
+        DB.selectById(id).ifPresent(schedulerService::startPeriodicRequest);
+    }
+
+    public void cancelPeriodicRequest(UUID id) {
+        schedulerService.cancelPeriodicRequest(id);
+    }
+
+    public void triggerApiRequest(UUID id) {
+        DB.selectById(id).ifPresent(schedulerService::triggerSingularRequest);
     }
 
     private boolean isMockExists(ApiMock apiMock) {
@@ -72,27 +101,27 @@ public class ApiService {
                         || mock.id().equals(apiMock.id()));
     }
 
-    public void deleteApi(UUID id) {
-        DB.remove(id);
-        LOGGER.debug("MockApi with id: %s was deleted successfully".formatted(id));
+    private static boolean isApiRequestPeriodic(ApiMock apiMock) {
+        return Role.CLIENT.toString().equals(apiMock.role().toLowerCase()) && apiMock.periodicTrigger().isPresent();
     }
 
     private void validate(ApiMock mock) throws InvalidMockCreation {
+        String BAD_VALIDATION_MESSAGE = "Mock validation was failed. Reason: %s";
         if (mock == null) {
-            throw new InvalidMockCreation("Invalid mock! mock is null..");
+            throw new InvalidMockCreation(BAD_VALIDATION_MESSAGE.formatted("The given ApiMock is null.."));
         }
 
         if (!Role.SERVER.toString().equals(mock.role().toLowerCase()) &&
                 !Role.CLIENT.toString().equals(mock.role().toLowerCase())) {
-            throw new InvalidMockCreation("Mock validation was failed. Reason: The desired apiMock has unrecognized role of %s".formatted(mock.role()));
+            throw new InvalidMockCreation(BAD_VALIDATION_MESSAGE.formatted("The desired apiMock has unrecognized role of %s".formatted(mock.role())));
         }
 
         if (Arrays.stream(HttpMethod.values()).noneMatch(httpMethod -> httpMethod.name().equals(mock.httpMethod().toUpperCase()))) {
-            throw new InvalidMockCreation("Mock validation was failed. Reason: The desired apiMock has unrecognized HttpMethod of %s".formatted(mock.role()));
+            throw new InvalidMockCreation(BAD_VALIDATION_MESSAGE.formatted("The desired apiMock has unrecognized HttpMethod of %s".formatted(mock.role())));
         }
 
         if ("".equals(mock.url())) {
-            throw new InvalidMockCreation("Mock validation was failed. Reason: ApiMock url is empty!");
+            throw new InvalidMockCreation(BAD_VALIDATION_MESSAGE.formatted("ApiMock url is empty!"));
         }
     }
 }

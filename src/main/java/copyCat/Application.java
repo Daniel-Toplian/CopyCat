@@ -25,8 +25,4 @@ public class Application {
             System.exit(1);
         });
     }
-
-    public static Properties properties(){
-        return properties;
-    }
 }

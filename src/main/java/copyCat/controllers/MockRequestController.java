@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-public class ApiController {
-    private final Logger LOGGER = LogManager.getLogger(ApiController.class);
+public class MockRequestController {
+    private final Logger LOGGER = LogManager.getLogger(MockRequestController.class);
     private final ApiService apiService;
 
     @Autowired
-    public ApiController(ApiService apiService) {
+    public MockRequestController(ApiService apiService) {
         this.apiService = apiService;
     }
 
