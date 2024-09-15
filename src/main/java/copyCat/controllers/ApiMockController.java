@@ -41,13 +41,13 @@ public class ApiMockController {
 
     @GetMapping("apiMocks")
     public ResponseEntity<List<ApiMock>> getAllMocks() {
-        LOGGER.trace("Received getAllMocks request");
+        LOGGER.debug("Received getAllMocks request");
         return ResponseEntity.status(HttpStatus.OK).body(apiService.getAll());
     }
 
     @GetMapping(BASE_ROUTE_SUFFIX + "/{id}")
     public ResponseEntity<Optional<ApiMock>> getMockById(@PathVariable UUID id) {
-        LOGGER.trace("Received getMockById request for id: %s".formatted(id));
+        LOGGER.debug("Received getMockById request for id: %s".formatted(id));
         return ResponseEntity.status(HttpStatus.OK).body(apiService.getById(id));
     }
 
@@ -84,21 +84,21 @@ public class ApiMockController {
 
     @PostMapping("/trigger")
     public ResponseEntity<String> triggerApiRequest(@PathVariable UUID id) {
-        LOGGER.debug("Received trigger api request on ApiMock with id: %s".formatted(id));
+        LOGGER.info("Received trigger api request on ApiMock with id: %s".formatted(id));
         apiService.triggerApiRequest(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/trigger/periodic/start")
     public ResponseEntity<String> startPeriodicRequests(@PathVariable UUID id) {
-        LOGGER.debug("Received start send periodically request on ApiMock with id: %s".formatted(id));
+        LOGGER.info("Received start send periodically request on ApiMock with id: %s".formatted(id));
         apiService.startPeriodicRequest(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/trigger/periodic/stop")
     public ResponseEntity<String> stopPeriodicRequests(@PathVariable UUID id) {
-        LOGGER.debug("Received stop send periodically request on ApiMock with id: %s".formatted(id));
+        LOGGER.info("Received stop send periodically request on ApiMock with id: %s".formatted(id));
         apiService.cancelPeriodicRequest(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

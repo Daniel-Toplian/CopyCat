@@ -26,8 +26,9 @@ public class MockRequestController {
     @RequestMapping("/**")
     public ResponseEntity<String> replayToRestRequest(HttpServletRequest request) {
         String requestedUrl = request.getRequestURI();
-        Optional<ApiMock> api = apiService.getByUrl(requestedUrl);
+        LOGGER.debug("Received request for: {}", requestedUrl);
 
+        Optional<ApiMock> api = apiService.getByUrl(requestedUrl);
         return api.map(apiMock -> ResponseEntity.status(apiMock.statusCode()).body(apiMock.response()))
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("API Mock not found for URL: " + requestedUrl));
     }

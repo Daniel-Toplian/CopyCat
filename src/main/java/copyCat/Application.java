@@ -19,7 +19,10 @@ public class Application {
         Launcher launcher = new Launcher();
         launcher.init().onSuccess(properties -> {
             Application.properties = properties;
-            run(Application.class, args);
+            String port = run(Application.class, args).getEnvironment().getProperty("server.port");
+            LOGGER.info("#######################################################");
+            LOGGER.info("      CopyCat is up and running on port: {}", port);
+            LOGGER.info("#######################################################");
         }).onFailure(error -> {
             LOGGER.error("Failed to start. Error: {}", error.getMessage());
             System.exit(1);

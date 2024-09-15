@@ -2,7 +2,7 @@
 <Configuration status="WARN">
 
     <Properties>
-        <Property name="logPattern">%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5level [%c{1.}] %msg%n</Property>
+        <Property name="logPattern">%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5level %c{1} - %msg%n</Property>
     </Properties>
 
     <Appenders>
@@ -11,11 +11,9 @@
         </Console>
 
         <RollingFile name="fileLogger"
-                     fileName="logs/app%d{yyyy-MM-dd}.log"
+                     fileName="logs/app.log"
                      filePattern="logs/app-%d{yyyy-MM-dd}.log">
-            <PatternLayout>
-                <PatternLayout pattern="${logPattern}"/>
-            </PatternLayout>
+            <PatternLayout pattern="${logPattern}"/>
             <Policies>
                 <TimeBasedTriggeringPolicy interval="1" modulate="true" />
                 <SizeBasedTriggeringPolicy size="10MB" />
@@ -29,9 +27,13 @@
     </Appenders>
 
     <Loggers>
-        <Root level="info">
+        <Logger name="copyCat" level="debug" additivity="false">
             <AppenderRef ref="Console"/>
-            <appenderRef ref="fileLogger" />
+        </Logger>
+
+        <Root level="error">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="fileLogger"/>
         </Root>
     </Loggers>
 </Configuration>
