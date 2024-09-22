@@ -64,7 +64,7 @@ public record RestMock(@JsonProperty("id") UUID id,
 
     public static class Builder {
         private Optional<Long> periodicTrigger = Optional.empty();
-        private Optional<HostAndPort> destination;
+        private Optional<HostAndPort> destination = Optional.empty();
         private String httpMethod;
         private String response;
         private int statusCode;
@@ -109,6 +109,11 @@ public record RestMock(@JsonProperty("id") UUID id,
             return this;
         }
 
+        public Builder periodicTrigger(Long periodicTrigger) {
+            this.periodicTrigger = Optional.of(periodicTrigger);
+            return this;
+        }
+
         public Builder periodicTrigger(Optional<Long> periodicTrigger) {
             this.periodicTrigger = periodicTrigger;
             return this;
@@ -116,6 +121,11 @@ public record RestMock(@JsonProperty("id") UUID id,
 
         public Builder destination(Optional<HostAndPort> destination) {
             this.destination = destination;
+            return this;
+        }
+
+        public Builder destination(HostAndPort destination) {
+            this.destination = Optional.of(destination);
             return this;
         }
 

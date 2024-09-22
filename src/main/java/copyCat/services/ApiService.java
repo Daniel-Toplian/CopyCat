@@ -116,6 +116,10 @@ public class ApiService {
             throw new InvalidMockCreation(BAD_VALIDATION_MESSAGE.formatted("The desired apiMock has unrecognized role of %s".formatted(mock.role())));
         }
 
+        if(Role.CLIENT.toString().equals(mock.role()) && mock.destination().isEmpty()){
+            throw new InvalidMockCreation(BAD_VALIDATION_MESSAGE.formatted("ApiMock with 'Client' role has no destination"));
+        }
+
         if (Arrays.stream(HttpMethod.values()).noneMatch(httpMethod -> httpMethod.name().equals(mock.httpMethod().toUpperCase()))) {
             throw new InvalidMockCreation(BAD_VALIDATION_MESSAGE.formatted("The desired apiMock has unrecognized HttpMethod of %s".formatted(mock.role())));
         }

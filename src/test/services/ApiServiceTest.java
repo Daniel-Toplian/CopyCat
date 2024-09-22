@@ -2,6 +2,7 @@ package services;
 
 import copyCat.dao.EntityDao;
 import copyCat.entities.ApiMock;
+import copyCat.entities.HostAndPort;
 import copyCat.entities.RestMock;
 import copyCat.entities.Role;
 import copyCat.services.ApiService;
@@ -97,10 +98,18 @@ public class ApiServiceTest {
     }
 
     @Test
-    void testAddNewApiMock() throws DataBaseOperationException, InvalidMockCreation {
+    void testAddNewServerApiMock() throws DataBaseOperationException, InvalidMockCreation {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         apiService.addApi(apiMock);
         verify(mockRepository, times(1)).insert(apiMock);
+    }
+
+    @Test
+    void testAddNewClientApiMock() throws DataBaseOperationException, InvalidMockCreation {
+        when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
+        ApiMock newMock = new RestMock.Builder().from(apiMock).role(Role.CLIENT.toString()).destination(new HostAndPort("localhost", 80)).build();
+        apiService.addApi(newMock);
+        verify(mockRepository, times(1)).insert(newMock);
     }
 
     @Test
@@ -124,7 +133,7 @@ public class ApiServiceTest {
         when(mockRepository.selectAll()).thenReturn(List.of(apiMock));
 
         UUID newId = UUID.randomUUID();
-        ApiMock newMock = new RestMock.Builder().from(apiMock).role(Role.CLIENT.toString()).id(newId).build();
+        ApiMock newMock = new RestMock.Builder().from(apiMock).role(Role.CLIENT.toString()).destination(new HostAndPort("localhost", 8080)).id(newId).build();
         apiService.addApi(newMock);
         verify(mockRepository, times(1)).insert(newMock);
     }
@@ -146,6 +155,13 @@ public class ApiServiceTest {
     void testAddApiMockWithUnrecognizedHttpMethod() {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         ApiMock newMock = new RestMock.Builder().from(apiMock).httpMethod("unrecognizedMethod").build();
+        assertThrows(InvalidMockCreation.class, () -> apiService.addApi(newMock));
+    }
+
+    @Test
+    void testAddClientMockWithoutDestination(){
+        when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
+        ApiMock newMock = new RestMock.Builder().from(apiMock).role(Role.CLIENT.toString()).build();
         assertThrows(InvalidMockCreation.class, () -> apiService.addApi(newMock));
     }
 

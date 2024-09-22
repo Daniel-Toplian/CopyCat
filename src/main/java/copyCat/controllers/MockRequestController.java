@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
+import static copyCat.utils.Constants.API_NOT_FOUND;
+
 @RestController
 public class MockRequestController {
     private final Logger LOGGER = LogManager.getLogger(MockRequestController.class);
@@ -30,6 +32,6 @@ public class MockRequestController {
 
         Optional<ApiMock> api = apiService.getByUrl(requestedUrl);
         return api.map(apiMock -> ResponseEntity.status(apiMock.statusCode()).body(apiMock.response()))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body("API Mock not found for URL: " + requestedUrl));
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(API_NOT_FOUND.formatted(requestedUrl)));
     }
 }
