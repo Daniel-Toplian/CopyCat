@@ -2,10 +2,9 @@ package copyCat.controllers;
 
 import copyCat.entities.ApiMock;
 import copyCat.entities.RestMock;
-import copyCat.utils.exceptions.DataBaseOperationException;
 import copyCat.services.ApiService;
+import copyCat.utils.exceptions.DataBaseOperationException;
 import copyCat.utils.exceptions.InvalidMockCreation;
-import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +60,7 @@ public class ApiMockController {
     @PostMapping(REST_MOCK_SUFFIX)
     public ResponseEntity<String> addMock(@RequestBody RestMock apiMock) {
         try {
-            LOGGER.info("Received new MockApi with the following data: %s".formatted(apiMock.toString())); // check if it prints well or parsing to json is needed
+            LOGGER.info("Received new MockApi with the following data: %s".formatted(apiMock.toString()));
             apiService.addApi(apiMock);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (DataBaseOperationException | InvalidMockCreation e) {
@@ -73,7 +72,7 @@ public class ApiMockController {
     @PutMapping(REST_MOCK_SUFFIX)
     public ResponseEntity<String> replaceMock(@PathVariable UUID id, @RequestBody RestMock apiMock) {
         try {
-            LOGGER.info("Received update for id: %s with the following data: %s".formatted(id, apiMock.toString())); // check if it prints well or parsing to json is needed
+            LOGGER.info("Received update for id: %s with the following data: %s".formatted(id, apiMock.toString()));
             apiService.updateApi(id, apiMock);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (DataBaseOperationException | InvalidMockCreation e) {
