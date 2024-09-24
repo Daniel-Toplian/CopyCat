@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -22,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 public class FileRecovery implements Recovery {
     private static final String DEFAULT_PATH = "src/main/resources/recovery.json";
     private final Logger LOGGER = LogManager.getLogger(FileRecovery.class);
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
     private File recoveryFile;
 
     @Autowired
@@ -47,15 +48,24 @@ public class FileRecovery implements Recovery {
 
     @Async
     @Override
-    public CompletableFuture<Map<UUID, ApiMock>> fetch() throws IOException {
-        return CompletableFuture.completedFuture(objectMapper.readValue(recoveryFile,
-                objectMapper.getTypeFactory().constructMapType(Map.class, UUID.class, ApiMock.class)));
+    public CompletableFuture<Map<UUID, ApiMock>> fetch() {
+        try {
+            HashMap<UUID,ApiMock> data = objectMapper.readValue(recoveryFile,
+                    objectMapper.getTypeFactory().constructMapType(Map.class, UUID.class, ApiMock.class));
+            return CompletableFuture.completedFuture(data);
+        } catch (Exception e){
+            return CompletableFuture.failedFuture(e);
+        }
     }
 
     @Async
     @Override
-    public CompletableFuture<Void> save(Map<UUID, ApiMock> apiMocks) throws IOException {
-        objectMapper.writeValue(recoveryFile, apiMocks);
-        return CompletableFuture.completedFuture(null);
+    public CompletableFuture<Void> save(Map<UUID, ApiMock> apiMocks) {
+        try {
+            objectMapper.writeValue(recoveryFile, apiMocks);
+            return CompletableFuture.completedFuture(null);
+        } catch (IOException e){
+            return CompletableFuture.failedFuture(e);
+        }
     }
 }

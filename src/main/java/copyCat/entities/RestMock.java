@@ -77,7 +77,6 @@ public record RestMock(@JsonProperty("id") UUID id,
         private String url;
         private String role;
         private String name;
-        private String type;
         private UUID id;
 
         public Builder id(UUID id) {
@@ -92,12 +91,6 @@ public record RestMock(@JsonProperty("id") UUID id,
 
         public Builder url(String url) {
             this.url = url;
-            return this;
-        }
-
-
-        public Builder type(String type) {
-            this.type = type;
             return this;
         }
 
@@ -153,9 +146,6 @@ public record RestMock(@JsonProperty("id") UUID id,
             if (this.id == null) {
                 this.id = UUID.randomUUID();
             }
-            if (this.type == null) {
-                this.type = "rest";
-            }
             if (this.url == null) {
                 this.url = "";
             }
@@ -175,13 +165,12 @@ public record RestMock(@JsonProperty("id") UUID id,
                 this.role = Role.SERVER.toString();
             }
 
-            return new RestMock(id, type, name, httpMethod, url, response, body, periodicTrigger, role, statusCode, destination);
+            return new RestMock(id, "rest", name, httpMethod, url, response, body, periodicTrigger, role, statusCode, destination);
         }
 
         public Builder from(ApiMock mock) {
             return this.httpMethod(mock.httpMethod())
                     .id(mock.id())
-                    .type(mock.type())
                     .name(mock.Name())
                     .url(mock.url())
                     .response(mock.response())
