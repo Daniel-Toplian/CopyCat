@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY pom.xml .
 COPY src ./src
-RUN mvn package -DskipTests
+RUN mvn package
 
 FROM eclipse-temurin:21-ubi9-minimal
 
