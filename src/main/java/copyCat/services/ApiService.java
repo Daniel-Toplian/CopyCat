@@ -1,6 +1,7 @@
 package copyCat.services;
 
 import copyCat.dao.EntityDao;
+import copyCat.dao.MockRepository;
 import copyCat.entities.ApiMock;
 import copyCat.entities.RestMock;
 import copyCat.entities.Role;
@@ -20,11 +21,11 @@ import java.util.UUID;
 @Service
 public class ApiService {
     private final Logger LOGGER = LogManager.getLogger(ApiService.class);
-    private final EntityDao<ApiMock> DB;
+    private final MockRepository DB;
     private final RequestSchedulerService schedulerService;
 
     @Autowired
-    public ApiService(EntityDao<ApiMock> DB, RequestSchedulerService schedulerService) {
+    public ApiService(MockRepository DB, RequestSchedulerService schedulerService) {
         this.DB = DB;
         this.schedulerService = schedulerService;
     }
@@ -38,9 +39,7 @@ public class ApiService {
     }
 
     public Optional<ApiMock> getByUrl(String url) {
-        return DB.selectAll().stream()
-                .filter(apiMock -> url.equals(apiMock.url()))
-                .findFirst();
+        return DB.selectByUrl(url);
     }
 
     public void addApi(ApiMock apiMock) throws DataBaseOperationException, InvalidMockCreation {

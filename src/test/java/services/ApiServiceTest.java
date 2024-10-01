@@ -1,6 +1,6 @@
 package services;
 
-import copyCat.dao.EntityDao;
+import copyCat.dao.MockRepository;
 import copyCat.entities.ApiMock;
 import copyCat.entities.HostAndPort;
 import copyCat.entities.RestMock;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 public class ApiServiceTest {
 
     @Mock
-    private EntityDao<ApiMock> mockRepository;
+    private MockRepository mockRepository;
     @Mock
     private RequestSchedulerService schedulerService;
     @InjectMocks
@@ -76,7 +76,7 @@ public class ApiServiceTest {
 
     @Test
     void testGetMockByUrl(){
-        when(mockRepository.selectAll()).thenReturn(List.of(apiMock));
+        when(mockRepository.selectByUrl(apiMock.url())).thenReturn(Optional.of(apiMock));
         Optional<ApiMock> result = apiService.getByUrl(apiMock.url());
         assertEquals(apiMock, result.get());
     }

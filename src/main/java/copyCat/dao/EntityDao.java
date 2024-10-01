@@ -6,13 +6,13 @@ import java.util.UUID;
 
 public interface EntityDao<T> {
 
+    List<T> selectAll();
+
+    Optional<T> selectById(UUID id);
+
     T insert(T item);
 
     T update(UUID id, T item);
 
     void remove(UUID item);
-
-    Optional<T> selectById(UUID id);
-
-    List<T> selectAll();
 }

@@ -17,9 +17,12 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import static copyCat.utils.Constants.FILE_RECOVERY;
+import static copyCat.utils.Constants.RECOVERY_TYPE;
+
 
 @Component
-@ConditionalOnProperty(name = "recovery.type", havingValue = "file")
+@ConditionalOnProperty(name = RECOVERY_TYPE, havingValue = FILE_RECOVERY)
 public class FileRecovery implements Recovery {
     private static final String DEFAULT_PATH = "src/main/resources/recovery.json";
     private final Logger LOGGER = LogManager.getLogger(FileRecovery.class);
