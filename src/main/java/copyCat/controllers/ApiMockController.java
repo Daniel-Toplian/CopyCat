@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static copyCat.utils.Constants.BASE_ROUTE;
 
@@ -45,13 +44,13 @@ public class ApiMockController {
     }
 
     @GetMapping(BASE_ROUTE_SUFFIX + "/{id}")
-    public ResponseEntity<Optional<ApiMock>> getMockById(@PathVariable UUID id) {
+    public ResponseEntity<Optional<ApiMock>> getMockById(@PathVariable String id) {
         LOGGER.debug("Received getMockById request for id: %s".formatted(id));
         return ResponseEntity.status(HttpStatus.OK).body(apiService.getById(id));
     }
 
     @DeleteMapping(BASE_ROUTE_SUFFIX + "/{id}")
-    public ResponseEntity<Void> deleteMock(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteMock(@PathVariable String id) {
         LOGGER.debug("Received deleteMock request for id: %s".formatted(id));
         apiService.deleteApi(id);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -70,7 +69,7 @@ public class ApiMockController {
     }
 
     @PutMapping(REST_MOCK_SUFFIX)
-    public ResponseEntity<String> replaceMock(@PathVariable UUID id, @RequestBody RestMock apiMock) {
+    public ResponseEntity<String> replaceMock(@PathVariable String id, @RequestBody RestMock apiMock) {
         try {
             LOGGER.info("Received update for id: %s with the following data: %s".formatted(id, apiMock.toString()));
             apiService.updateApi(id, apiMock);
@@ -82,21 +81,21 @@ public class ApiMockController {
     }
 
     @PostMapping("/trigger")
-    public ResponseEntity<String> triggerApiRequest(@PathVariable UUID id) {
+    public ResponseEntity<String> triggerApiRequest(@PathVariable String id) {
         LOGGER.info("Received trigger api request on ApiMock with id: %s".formatted(id));
         apiService.triggerApiRequest(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/trigger/periodic/start")
-    public ResponseEntity<String> startPeriodicRequests(@PathVariable UUID id) {
+    public ResponseEntity<String> startPeriodicRequests(@PathVariable String id) {
         LOGGER.info("Received start send periodically request on ApiMock with id: %s".formatted(id));
         apiService.startPeriodicRequest(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("/trigger/periodic/stop")
-    public ResponseEntity<String> stopPeriodicRequests(@PathVariable UUID id) {
+    public ResponseEntity<String> stopPeriodicRequests(@PathVariable String id) {
         LOGGER.info("Received stop send periodically request on ApiMock with id: %s".formatted(id));
         apiService.cancelPeriodicRequest(id);
         return ResponseEntity.status(HttpStatus.OK).build();

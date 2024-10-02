@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static copyCat.utils.Constants.FILE_RECOVERY;
 import static copyCat.utils.Constants.RECOVERY_TYPE;
@@ -22,7 +21,7 @@ import static copyCat.utils.Constants.RECOVERY_TYPE;
 public class InMemoeryMockRepository implements MockRepository {
     private final Logger LOGGER = LogManager.getLogger(InMemoeryMockRepository.class);
     private final Recovery recovery;
-    private HashMap<UUID, ApiMock> mocks;
+    private HashMap<String, ApiMock> mocks;
 
     @Autowired
     public InMemoeryMockRepository(Recovery recovery){
@@ -33,7 +32,7 @@ public class InMemoeryMockRepository implements MockRepository {
     private void loadRecovery() {
         try {
             this.recovery.fetch()
-                    .thenApply(apiMocks -> mocks = (HashMap<UUID, ApiMock>) apiMocks);
+                    .thenApply(apiMocks -> mocks = (HashMap<String, ApiMock>) apiMocks);
         } catch (Exception e) {
             LOGGER.error("Unable to fetch recovery data, starting empty. Error: %s".formatted(e.getMessage()));
             mocks = new HashMap<>();
@@ -46,7 +45,7 @@ public class InMemoeryMockRepository implements MockRepository {
     }
 
     @Override
-    public Optional<ApiMock> selectById(UUID id) {
+    public Optional<ApiMock> selectById(String id) {
         return Optional.ofNullable(mocks.get(id));
     }
 
@@ -64,14 +63,14 @@ public class InMemoeryMockRepository implements MockRepository {
     }
 
     @Override
-    public ApiMock update(UUID id, ApiMock updatedMock) {
+    public ApiMock update(String id, ApiMock updatedMock) {
         mocks.replace(updatedMock.id(), updatedMock);
         saveToRecovery();
         return updatedMock;
     }
 
     @Override
-    public void remove(UUID mock) {
+    public void remove(String mock) {
         mocks.remove(mock);
         saveToRecovery();
     }

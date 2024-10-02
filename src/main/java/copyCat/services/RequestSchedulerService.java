@@ -14,15 +14,14 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 @Service
 public class RequestSchedulerService {
     private final Logger LOGGER = LogManager.getLogger(RequestSchedulerService.class);
     private final RestTemplate restTemplate;
-    private final Map<UUID, Long> activeRequests = new HashMap<>();
-    private final Map<UUID, Integer> attemptsCounter = new HashMap<>();
+    private final Map<String, Long> activeRequests = new HashMap<>();
+    private final Map<String, Integer> attemptsCounter = new HashMap<>();
     private final Vertx vertx = Vertx.vertx();
 
     @Autowired
@@ -40,7 +39,7 @@ public class RequestSchedulerService {
         activeRequests.put(apiMock.id(), periodicId);
     }
 
-    public void cancelPeriodicRequest(UUID id) {
+    public void cancelPeriodicRequest(String id) {
         LOGGER.debug("Stopping periodic request for ApiMock with id: %s".formatted(id));
         if (activeRequests.containsKey(id)) {
             vertx.cancelTimer(activeRequests.remove(id));

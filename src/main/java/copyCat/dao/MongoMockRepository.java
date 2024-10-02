@@ -7,14 +7,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static copyCat.utils.Constants.MONGO_RECOVERY;
 import static copyCat.utils.Constants.RECOVERY_TYPE;
 
 @Repository
 @ConditionalOnProperty(name = RECOVERY_TYPE, havingValue = MONGO_RECOVERY)
-public interface MongoMockRepository extends MockRepository, MongoRepository<ApiMock,UUID> {
+public interface MongoMockRepository extends MockRepository, MongoRepository<ApiMock,String> {
 
     @Override
     default Optional<ApiMock> selectByUrl(String url) {
@@ -27,7 +26,7 @@ public interface MongoMockRepository extends MockRepository, MongoRepository<Api
     }
 
     @Override
-    default Optional<ApiMock> selectById(UUID id) {
+    default Optional<ApiMock> selectById(String id) {
         return Optional.empty();
     }
 
@@ -37,12 +36,12 @@ public interface MongoMockRepository extends MockRepository, MongoRepository<Api
     }
 
     @Override
-    default ApiMock update(UUID id, ApiMock item) {
+    default ApiMock update(String id, ApiMock item) {
         return null;
     }
 
     @Override
-    default void remove(UUID item) {
+    default void remove(String item) {
 
     }
 }

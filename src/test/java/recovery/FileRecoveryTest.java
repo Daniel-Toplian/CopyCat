@@ -10,14 +10,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileRecoveryTest {
 
-    private static final Map<UUID, ApiMock> mockData = new HashMap<>();;
+    private static final Map<String, ApiMock> mockData = new HashMap<>();;
     private static FileRecovery fileRecovery;
     private static ObjectMapper objectMapper;
 
@@ -38,7 +37,7 @@ public class FileRecoveryTest {
 
     @Test
     public void testFetch_Success() throws Exception {
-        CompletableFuture<Map<UUID, ApiMock>> result = fileRecovery.fetch();
+        CompletableFuture<Map<String, ApiMock>> result = fileRecovery.fetch();
         assertEquals(mockData, result.get());
     }
 

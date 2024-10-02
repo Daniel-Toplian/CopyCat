@@ -18,7 +18,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static copyCat.utils.Constants.API_NOT_FOUND;
 
@@ -37,7 +36,7 @@ public class MockRequestControllerTest {
     @Test
     public void replayToRestRequest_found() throws Exception {
         ApiMock apiMock = new RestMock.Builder()
-                .id(UUID.randomUUID())
+                .id("mockId")
                 .name("MockRequestController-Tests")
                 .url(TEST_URL)
                 .response("response")

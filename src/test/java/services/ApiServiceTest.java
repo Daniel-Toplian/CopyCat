@@ -20,7 +20,6 @@ import org.springframework.http.HttpMethod;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -34,14 +33,14 @@ public class ApiServiceTest {
     @InjectMocks
     private ApiService apiService;
     private ApiMock apiMock;
-    private UUID mockId;
+    private String mockId;
 
     private static AutoCloseable closeable;
 
     @BeforeEach
     public void setup() {
         closeable = MockitoAnnotations.openMocks(this);
-        mockId = UUID.randomUUID();
+        mockId = "mockId";
         apiMock = new RestMock.Builder()
                 .id(mockId)
                 .name("testMock")
@@ -92,7 +91,7 @@ public class ApiServiceTest {
     void testNoneExistingGetMockById() {
         when(mockRepository.selectById(mockId)).thenReturn(Optional.empty());
 
-        UUID noneExistingId = UUID.randomUUID();
+        String noneExistingId = "randomId";
         Optional<ApiMock> result = apiService.getById(noneExistingId);
         assertTrue(result.isEmpty());
     }
@@ -132,7 +131,7 @@ public class ApiServiceTest {
     void testAddNewApiMockWithSameUrlButDifferentRole() throws DataBaseOperationException, InvalidMockCreation {
         when(mockRepository.selectAll()).thenReturn(List.of(apiMock));
 
-        UUID newId = UUID.randomUUID();
+        String newId = "newMockId";
         ApiMock newMock = new RestMock.Builder().from(apiMock).role(Role.CLIENT.toString()).destination(new HostAndPort("localhost", 8080)).id(newId).build();
         apiService.addApi(newMock);
         verify(mockRepository, times(1)).insert(newMock);
@@ -203,7 +202,7 @@ public class ApiServiceTest {
     @Test
     void testUpdateWithNonExistingApiMock() {
         when(mockRepository.selectAll()).thenReturn(List.of(apiMock));
-        UUID newId = UUID.randomUUID();
+        String newId = "newMockId";
         ApiMock updatedMock = new RestMock.Builder().from(apiMock).id(newId).body("update test").build();
         assertThrows(DataBaseOperationException.class, () -> apiService.updateApi(newId, updatedMock));
     }

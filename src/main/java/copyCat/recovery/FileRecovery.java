@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import static copyCat.utils.Constants.FILE_RECOVERY;
@@ -51,10 +50,10 @@ public class FileRecovery implements Recovery {
 
     @Async
     @Override
-    public CompletableFuture<Map<UUID, ApiMock>> fetch() {
+    public CompletableFuture<Map<String, ApiMock>> fetch() {
         try {
-            HashMap<UUID,ApiMock> data = objectMapper.readValue(recoveryFile,
-                    objectMapper.getTypeFactory().constructMapType(Map.class, UUID.class, ApiMock.class));
+            HashMap<String,ApiMock> data = objectMapper.readValue(recoveryFile,
+                    objectMapper.getTypeFactory().constructMapType(Map.class, String.class, ApiMock.class));
             return CompletableFuture.completedFuture(data);
         } catch (Exception e){
             return CompletableFuture.failedFuture(e);
@@ -63,7 +62,7 @@ public class FileRecovery implements Recovery {
 
     @Async
     @Override
-    public CompletableFuture<Void> save(Map<UUID, ApiMock> apiMocks) {
+    public CompletableFuture<Void> save(Map<String, ApiMock> apiMocks) {
         try {
             objectMapper.writeValue(recoveryFile, apiMocks);
             return CompletableFuture.completedFuture(null);

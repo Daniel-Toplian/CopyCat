@@ -1,6 +1,5 @@
 package copyCat.services;
 
-import copyCat.dao.EntityDao;
 import copyCat.dao.MockRepository;
 import copyCat.entities.ApiMock;
 import copyCat.entities.RestMock;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class ApiService {
@@ -34,7 +32,7 @@ public class ApiService {
         return DB.selectAll();
     }
 
-    public Optional<ApiMock> getById(UUID id) {
+    public Optional<ApiMock> getById(String id) {
         return DB.selectById(id);
     }
 
@@ -56,7 +54,7 @@ public class ApiService {
         LOGGER.debug("New MockApi was added successfully");
     }
 
-    public void updateApi(UUID id, ApiMock apiMock) throws DataBaseOperationException, InvalidMockCreation {
+    public void updateApi(String id, ApiMock apiMock) throws DataBaseOperationException, InvalidMockCreation {
         validate(apiMock);
         if (DB.selectById(id).isEmpty()) {
             throw new DataBaseOperationException("Failed to update ApiMock with id: %s, Error: ApiMock is not exists".formatted(id));
@@ -74,21 +72,21 @@ public class ApiService {
         LOGGER.debug("Update process for MockApi with id: %s, was added successfully".formatted(id));
     }
 
-    public void deleteApi(UUID id) {
+    public void deleteApi(String id) {
         DB.remove(id);
         schedulerService.cancelPeriodicRequest(id);
         LOGGER.debug("MockApi with id: %s was deleted successfully".formatted(id));
     }
 
-    public void startPeriodicRequest(UUID id) {
+    public void startPeriodicRequest(String id) {
         DB.selectById(id).ifPresent(schedulerService::startPeriodicRequest);
     }
 
-    public void cancelPeriodicRequest(UUID id) {
+    public void cancelPeriodicRequest(String id) {
         schedulerService.cancelPeriodicRequest(id);
     }
 
-    public void triggerApiRequest(UUID id) {
+    public void triggerApiRequest(String id) {
         DB.selectById(id).ifPresent(schedulerService::triggerSingularRequest);
     }
 

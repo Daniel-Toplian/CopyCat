@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpMethod;
 
 import java.util.Optional;
-import java.util.UUID;
 
-public record RestMock(@JsonProperty("id") UUID id,
+public record RestMock(@JsonProperty("id") String id,
                        @JsonProperty("type") String type,
                        @JsonProperty("name") String name,
                        @JsonProperty("httpMethod") String httpMethod,
@@ -18,55 +17,6 @@ public record RestMock(@JsonProperty("id") UUID id,
                        @JsonProperty("statusCode") int statusCode,
                        @JsonProperty("destination") Optional<HostAndPort> destination) implements ApiMock {
 
-    @Override
-    public String Name() {
-        return name;
-    }
-
-    public String type() {
-        return type;
-    }
-
-    @Override
-    public String httpMethod() {
-        return httpMethod;
-    }
-
-    @Override
-    public String url() {
-        return url;
-    }
-
-    @Override
-    public String response() {
-        return response;
-    }
-
-    @Override
-    public String body() {
-        return body;
-    }
-
-    @Override
-    public Optional<Long> periodicTrigger() {
-        return periodicTrigger;
-    }
-
-    @Override
-    public String role() {
-        return role;
-    }
-
-    @Override
-    public int statusCode() {
-        return statusCode;
-    }
-
-    @Override
-    public Optional<HostAndPort> destination() {
-        return destination;
-    }
-
     public static class Builder {
         private Optional<Long> periodicTrigger = Optional.empty();
         private Optional<HostAndPort> destination = Optional.empty();
@@ -77,9 +27,9 @@ public record RestMock(@JsonProperty("id") UUID id,
         private String url;
         private String role;
         private String name;
-        private UUID id;
+        private String id;
 
-        public Builder id(UUID id) {
+        public Builder id(String id) {
             this.id = id;
             return this;
         }
@@ -144,7 +94,7 @@ public record RestMock(@JsonProperty("id") UUID id,
                 this.httpMethod = HttpMethod.GET.name();
             }
             if (this.id == null) {
-                this.id = UUID.randomUUID();
+                this.id = "";
             }
             if (this.url == null) {
                 this.url = "";
@@ -171,7 +121,7 @@ public record RestMock(@JsonProperty("id") UUID id,
         public Builder from(ApiMock mock) {
             return this.httpMethod(mock.httpMethod())
                     .id(mock.id())
-                    .name(mock.Name())
+                    .name(mock.name())
                     .url(mock.url())
                     .response(mock.response())
                     .body(mock.body())
