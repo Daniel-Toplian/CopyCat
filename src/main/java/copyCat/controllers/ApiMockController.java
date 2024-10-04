@@ -87,14 +87,14 @@ public class ApiMockController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping("/trigger/periodic/start")
+    @PostMapping("/trigger/periodic/start/{id}")
     public ResponseEntity<String> startPeriodicRequests(@PathVariable String id) {
         LOGGER.info("Received start send periodically request on ApiMock with id: %s".formatted(id));
         apiService.startPeriodicRequest(id);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping("/trigger/periodic/stop")
+    @PostMapping("/trigger/periodic/stop/{id}")
     public ResponseEntity<String> stopPeriodicRequests(@PathVariable String id) {
         LOGGER.info("Received stop send periodically request on ApiMock with id: %s".formatted(id));
         apiService.cancelPeriodicRequest(id);
