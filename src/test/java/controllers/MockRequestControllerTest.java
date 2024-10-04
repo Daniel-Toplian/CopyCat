@@ -35,7 +35,7 @@ public class MockRequestControllerTest {
 
     @Test
     public void replayToRestRequest_found() throws Exception {
-        ApiMock apiMock = new RestMock.Builder()
+        ApiMock apiMock = RestMock.builder()
                 .id("mockId")
                 .name("MockRequestController-Tests")
                 .url(TEST_URL)

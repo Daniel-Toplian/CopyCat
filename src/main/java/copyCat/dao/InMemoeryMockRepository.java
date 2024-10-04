@@ -55,8 +55,8 @@ public class InMemoeryMockRepository implements MockRepository {
     }
 
     @Override
-    public ApiMock insert(ApiMock mock) {
-        RestMock newMock = new RestMock.Builder().from(mock).build();
+    public ApiMock add(ApiMock mock) {
+        RestMock newMock = RestMock.builder().from(mock).build();
         mocks.put(newMock.id(), newMock);
         saveToRecovery();
         return newMock;

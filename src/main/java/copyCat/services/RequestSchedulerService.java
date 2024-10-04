@@ -33,7 +33,14 @@ public class RequestSchedulerService {
         if (activeRequests.containsKey(apiMock.id())) {
             cancelPeriodicRequest(apiMock.id());
         }
-        long periodicId = vertx.setPeriodic(apiMock.periodicTrigger().get(), ignore -> {
+
+        if (apiMock.periodicTrigger() == null || apiMock.periodicTrigger() <= 0) {
+            LOGGER.error("starting periodic request for apiMock with id: %s and name: %s has failed. Reason: periodicTrigger is null or a negative number"
+                    .formatted(apiMock.id(), apiMock.name()));
+            return;
+        }
+
+        long periodicId = vertx.setPeriodic(apiMock.periodicTrigger(), ignore -> {
             sendApiRequest(apiMock);
         });
         activeRequests.put(apiMock.id(), periodicId);
@@ -81,12 +88,12 @@ public class RequestSchedulerService {
     }
 
     private void sendByRest(RestMock restMock) throws InvalidMockCreation {
-        if (restMock.destination().isEmpty()) {
+        if (restMock.destination() == null) {
             throw new InvalidMockCreation("Cannot complete api request. Error: There is no destination for ApiMock with id: %s and name: %s"
                     .formatted(restMock.id(), restMock.name()));
         }
         HttpEntity<String> payload = new HttpEntity<>(restMock.body());
-        String url = "http://" + restMock.destination().get() + restMock.url();
+        String url = "http://" + restMock.destination() + restMock.url();
         restTemplate.exchange(url, HttpMethod.valueOf(restMock.httpMethod().toUpperCase()), payload, String.class);
     }
 }

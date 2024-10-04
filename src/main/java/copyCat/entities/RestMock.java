@@ -1,28 +1,33 @@
 package copyCat.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 
-import java.util.Optional;
-
-public record RestMock(@JsonProperty("id") String id,
+public record RestMock(@JsonProperty("id") @Id String id,
+                       @JsonProperty("name") @Indexed(unique = true) String name,
                        @JsonProperty("type") String type,
-                       @JsonProperty("name") String name,
                        @JsonProperty("httpMethod") String httpMethod,
                        @JsonProperty("url") String url,
                        @JsonProperty("response") String response,
                        @JsonProperty("body") String body,
-                       @JsonProperty("periodicTrigger") Optional<Long> periodicTrigger,
+                       @JsonProperty("periodicTrigger") Long periodicTrigger,
                        @JsonProperty("role") String role,
                        @JsonProperty("statusCode") int statusCode,
-                       @JsonProperty("destination") Optional<HostAndPort> destination) implements ApiMock {
+                       @JsonProperty("destination") HostAndPort destination) implements ApiMock {
+
+    public static Builder builder(){
+        return new Builder();
+    }
 
     public static class Builder {
-        private Optional<Long> periodicTrigger = Optional.empty();
-        private Optional<HostAndPort> destination = Optional.empty();
+        private int statusCode = HttpStatus.OK.value();
+        private HostAndPort destination;
+        private Long periodicTrigger;
         private String httpMethod;
         private String response;
-        private int statusCode;
         private String body;
         private String url;
         private String role;
@@ -65,22 +70,12 @@ public record RestMock(@JsonProperty("id") String id,
         }
 
         public Builder periodicTrigger(Long periodicTrigger) {
-            this.periodicTrigger = Optional.of(periodicTrigger);
-            return this;
-        }
-
-        public Builder periodicTrigger(Optional<Long> periodicTrigger) {
             this.periodicTrigger = periodicTrigger;
             return this;
         }
 
-        public Builder destination(Optional<HostAndPort> destination) {
-            this.destination = destination;
-            return this;
-        }
-
         public Builder destination(HostAndPort destination) {
-            this.destination = Optional.of(destination);
+            this.destination = destination;
             return this;
         }
 
@@ -90,29 +85,32 @@ public record RestMock(@JsonProperty("id") String id,
         }
 
         public RestMock build() {
-            if (this.httpMethod == null) {
-                this.httpMethod = HttpMethod.GET.name();
+            if (httpMethod == null) {
+                httpMethod = HttpMethod.GET.name();
             }
-            if (this.id == null) {
-                this.id = "";
+            if (id == null) {
+                id = "";
             }
-            if (this.url == null) {
-                this.url = "";
+            if (url == null) {
+                url = "";
             }
-            if (this.name == null) {
-                this.name = "";
+            if (name == null) {
+                name = "";
             }
-            if (this.statusCode <= 0) {
-                this.statusCode = 200;
+            if (statusCode < 100 || statusCode > 999) {
+                statusCode = HttpStatus.OK.value();
             }
-            if (this.response == null) {
-                this.response = "{}";
+            if (response == null) {
+                response = "{}";
             }
-            if (this.body == null) {
-                this.body = "";
+            if (body == null) {
+                body = "";
             }
-            if (this.role == null) {
-                this.role = Role.SERVER.toString();
+            if (role == null) {
+                role = Role.SERVER.toString();
+            }
+            if(periodicTrigger != null && this.periodicTrigger < 0){
+                periodicTrigger = null;
             }
 
             return new RestMock(id, "rest", name, httpMethod, url, response, body, periodicTrigger, role, statusCode, destination);
