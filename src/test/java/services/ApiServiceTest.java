@@ -56,7 +56,7 @@ public class ApiServiceTest {
     }
 
     @Test
-    void testGetAllMocks() {
+    void testGetAllMocks() throws DataBaseOperationException {
         when(mockRepository.selectAll()).thenReturn(List.of(apiMock));
 
         List<ApiMock> result = apiService.getAll();
@@ -65,7 +65,7 @@ public class ApiServiceTest {
     }
 
     @Test
-    void testGetMockById() {
+    void testGetMockById() throws DataBaseOperationException {
         when(mockRepository.selectById(mockId)).thenReturn(Optional.of(apiMock));
 
         Optional<ApiMock> result = apiService.getById(mockId);
@@ -74,21 +74,21 @@ public class ApiServiceTest {
     }
 
     @Test
-    void testGetMockByUrl(){
+    void testGetMockByUrl() {
         when(mockRepository.selectByUrl(apiMock.url())).thenReturn(Optional.of(apiMock));
         Optional<ApiMock> result = apiService.getByUrl(apiMock.url());
         assertEquals(apiMock, result.get());
     }
 
     @Test
-    void testGetMockByUrlWithNoMatch(){
+    void testGetMockByUrlWithNoMatch() throws DataBaseOperationException {
         when(mockRepository.selectAll()).thenReturn(List.of(apiMock));
         Optional<ApiMock> result = apiService.getByUrl("randomUrl");
         assertTrue(result.isEmpty());
     }
 
     @Test
-    void testNoneExistingGetMockById() {
+    void testNoneExistingGetMockById() throws DataBaseOperationException {
         when(mockRepository.selectById(mockId)).thenReturn(Optional.empty());
 
         String noneExistingId = "randomId";
@@ -138,34 +138,34 @@ public class ApiServiceTest {
     }
 
     @Test
-    void testAddNullApiMock() {
+    void testAddNullApiMock() throws DataBaseOperationException {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         assertThrows(InvalidMockCreation.class, () -> apiService.addApi(null));
     }
 
     @Test
-    void testAddApiMockWithUnrecognizedRole() {
+    void testAddApiMockWithUnrecognizedRole() throws DataBaseOperationException {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         ApiMock newMock = RestMock.builder().from(apiMock).role("unrecognizedRole").build();
         assertThrows(InvalidMockCreation.class, () -> apiService.addApi(newMock));
     }
 
     @Test
-    void testAddApiMockWithUnrecognizedHttpMethod() {
+    void testAddApiMockWithUnrecognizedHttpMethod() throws DataBaseOperationException {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         ApiMock newMock = RestMock.builder().from(apiMock).httpMethod("unrecognizedMethod").build();
         assertThrows(InvalidMockCreation.class, () -> apiService.addApi(newMock));
     }
 
     @Test
-    void testAddClientMockWithoutDestination(){
+    void testAddClientMockWithoutDestination() throws DataBaseOperationException {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         ApiMock newMock = RestMock.builder().from(apiMock).role(Role.CLIENT.toString()).build();
         assertThrows(InvalidMockCreation.class, () -> apiService.addApi(newMock));
     }
 
     @Test
-    void testAddApiMockWithEmptyUrl() {
+    void testAddApiMockWithEmptyUrl() throws DataBaseOperationException {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         ApiMock newMock = RestMock.builder().from(apiMock).url("").build();
         assertThrows(InvalidMockCreation.class, () -> apiService.addApi(newMock));
@@ -178,14 +178,14 @@ public class ApiServiceTest {
     }
 
     @Test
-    void testDeleteExistingApiMock(){
+    void testDeleteExistingApiMock() throws DataBaseOperationException {
         when(mockRepository.selectAll()).thenReturn(List.of(apiMock));
         apiService.deleteApi(mockId);
         verify(mockRepository, times(1)).remove(mockId);
     }
 
     @Test
-    void testDeleteNonExistingApiMock(){
+    void testDeleteNonExistingApiMock() throws DataBaseOperationException {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         apiService.deleteApi(mockId);
         verify(mockRepository, times(1)).remove(mockId);
@@ -200,7 +200,7 @@ public class ApiServiceTest {
     }
 
     @Test
-    void testUpdateWithNonExistingApiMock() {
+    void testUpdateWithNonExistingApiMock() throws DataBaseOperationException {
         when(mockRepository.selectAll()).thenReturn(List.of(apiMock));
         String newId = "newMockId";
         ApiMock updatedMock = RestMock.builder().from(apiMock).id(newId).body("update test").build();

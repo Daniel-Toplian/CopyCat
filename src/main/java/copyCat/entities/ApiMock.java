@@ -4,6 +4,7 @@ package copyCat.entities;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.mongodb.lang.Nullable;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
@@ -13,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 })
 @Document("ApiMocks")
 public interface ApiMock {
+    @Id
     String id();
 
     String type();

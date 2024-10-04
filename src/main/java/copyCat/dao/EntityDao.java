@@ -1,17 +1,19 @@
 package copyCat.dao;
 
+import copyCat.utils.exceptions.DataBaseOperationException;
+
 import java.util.List;
 import java.util.Optional;
 
 public interface EntityDao<T> {
 
-    List<T> selectAll();
+    List<T> selectAll() throws DataBaseOperationException;
 
-    Optional<T> selectById(String id);
+    Optional<T> selectById(String id) throws DataBaseOperationException;
 
-    T insert(T item);
+    T add(T item) throws DataBaseOperationException;
 
-    T update(String id, T item);
+    T update(String id, T item) throws DataBaseOperationException;
 
-    void remove(String item);
+    void remove(String item) throws DataBaseOperationException;
 }

@@ -40,20 +40,33 @@ public class ApiMockController {
     @GetMapping("apiMocks")
     public ResponseEntity<List<ApiMock>> getAllMocks() {
         LOGGER.debug("Received getAllMocks request");
-        return ResponseEntity.status(HttpStatus.OK).body(apiService.getAll());
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(apiService.getAll());
+        } catch (DataBaseOperationException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping(BASE_ROUTE_SUFFIX + "/{id}")
     public ResponseEntity<Optional<ApiMock>> getMockById(@PathVariable String id) {
         LOGGER.debug("Received getMockById request for id: %s".formatted(id));
-        return ResponseEntity.status(HttpStatus.OK).body(apiService.getById(id));
+        try {
+            Optional<ApiMock> requestedMock = apiService.getById(id);
+            return ResponseEntity.status(requestedMock.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(requestedMock);
+        } catch (DataBaseOperationException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @DeleteMapping(BASE_ROUTE_SUFFIX + "/{id}")
-    public ResponseEntity<Void> deleteMock(@PathVariable String id) {
+    public ResponseEntity<String> deleteMock(@PathVariable String id) {
         LOGGER.debug("Received deleteMock request for id: %s".formatted(id));
-        apiService.deleteApi(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        try {
+            apiService.deleteApi(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (DataBaseOperationException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @PostMapping(REST_MOCK_SUFFIX)
@@ -83,15 +96,23 @@ public class ApiMockController {
     @PostMapping("/trigger")
     public ResponseEntity<String> triggerApiRequest(@PathVariable String id) {
         LOGGER.info("Received trigger api request on ApiMock with id: %s".formatted(id));
-        apiService.triggerApiRequest(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        try {
+            apiService.triggerApiRequest(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (DataBaseOperationException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @PostMapping("/trigger/periodic/start/{id}")
     public ResponseEntity<String> startPeriodicRequests(@PathVariable String id) {
         LOGGER.info("Received start send periodically request on ApiMock with id: %s".formatted(id));
-        apiService.startPeriodicRequest(id);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        try {
+            apiService.startPeriodicRequest(id);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (DataBaseOperationException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @PostMapping("/trigger/periodic/stop/{id}")
