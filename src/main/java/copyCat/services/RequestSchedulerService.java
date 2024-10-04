@@ -40,9 +40,7 @@ public class RequestSchedulerService {
             return;
         }
 
-        long periodicId = vertx.setPeriodic(apiMock.periodicTrigger(), ignore -> {
-            sendApiRequest(apiMock);
-        });
+        long periodicId = vertx.setPeriodic(apiMock.periodicTrigger(), ignore -> sendApiRequest(apiMock));
         activeRequests.put(apiMock.id(), periodicId);
     }
 
@@ -54,10 +52,8 @@ public class RequestSchedulerService {
     }
 
     public void triggerSingularRequest(ApiMock apiMock) {
-        sendApiRequest(apiMock, exception -> {
-            LOGGER.debug("Failure in sending request for ApiMock with url: %s, id: %s. Error: %s"
-                    .formatted("http://" + apiMock.url(), apiMock.id(), exception.getMessage()));
-        });
+        sendApiRequest(apiMock, exception -> LOGGER.debug("Failure in sending request for ApiMock with url: %s, id: %s. Error: %s"
+                .formatted("http://" + apiMock.url(), apiMock.id(), exception.getMessage())));
     }
 
     private void sendApiRequest(ApiMock apiMock) {

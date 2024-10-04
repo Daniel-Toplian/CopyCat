@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class FileRecoveryTest {
 
-    private static final Map<String, ApiMock> mockData = new HashMap<>();;
+    private static final Map<String, ApiMock> mockData = new HashMap<>();
     private static FileRecovery fileRecovery;
     private static ObjectMapper objectMapper;
 
