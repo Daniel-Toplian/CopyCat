@@ -26,7 +26,7 @@ public class MockRequestController {
     }
 
     @RequestMapping("/**")
-    public ResponseEntity<String> replayToRestRequest(HttpServletRequest request) {
+    public ResponseEntity<String> replay(HttpServletRequest request) {
         String requestedUrl = request.getRequestURI();
         LOGGER.debug("Received request for: {}", requestedUrl);
 
