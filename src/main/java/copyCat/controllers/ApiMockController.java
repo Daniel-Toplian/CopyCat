@@ -64,11 +64,11 @@ public class ApiMockController {
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (DataBaseOperationException | InvalidMockCreation e) {
             LOGGER.error("Failed to add new ApiMock, Error: %s".formatted(e.getMessage()));
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.toString());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    @PutMapping(REST_MOCK_SUFFIX)
+    @PutMapping(REST_MOCK_SUFFIX + "/{id}")
     public ResponseEntity<String> replaceMock(@PathVariable String id, @RequestBody RestMock apiMock) {
         try {
             LOGGER.info("Received update for id: %s with the following data: %s".formatted(id, apiMock.toString()));

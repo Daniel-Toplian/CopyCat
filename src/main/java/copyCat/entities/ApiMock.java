@@ -3,10 +3,8 @@ package copyCat.entities;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.springframework.data.annotation.Id;
+import com.mongodb.lang.Nullable;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.Optional;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", visible = true)
 @JsonSubTypes({
@@ -15,7 +13,6 @@ import java.util.Optional;
 })
 @Document("ApiMocks")
 public interface ApiMock {
-    @Id
     String id();
 
     String type();
@@ -34,7 +31,9 @@ public interface ApiMock {
 
     int statusCode();
 
-    Optional<Long> periodicTrigger(); // in milliseconds
+    @Nullable
+    Long periodicTrigger(); // in milliseconds
 
-    Optional<HostAndPort> destination();
+    @Nullable
+    HostAndPort destination();
 }
