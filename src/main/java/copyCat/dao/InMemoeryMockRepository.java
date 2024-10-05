@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static copyCat.utils.Constants.FILE_RECOVERY;
 import static copyCat.utils.Constants.RECOVERY_TYPE;
@@ -56,10 +57,14 @@ public class InMemoeryMockRepository implements MockRepository {
 
     @Override
     public ApiMock add(ApiMock mock) {
-        RestMock newMock = RestMock.builder().from(mock).build();
+        RestMock newMock = mock.id() == null ? RestMock.builder().from(mock).id(generateId()).build() : RestMock.builder().from(mock).build();
         mocks.put(newMock.id(), newMock);
         saveToRecovery();
         return newMock;
+    }
+
+    private String generateId() {
+        return UUID.randomUUID().toString();
     }
 
     @Override

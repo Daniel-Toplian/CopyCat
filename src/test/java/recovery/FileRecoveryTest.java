@@ -25,7 +25,7 @@ public class FileRecoveryTest {
         objectMapper = new ObjectMapper().registerModule(new Jdk8Module());
         fileRecovery = new FileRecovery(objectMapper, "test-recovery.json");
 
-        ApiMock mock = RestMock.builder().url("/test").build();
+        ApiMock mock = RestMock.builder().id("mockId").name("test").url("/test").build();
         mockData.put(mock.id(), mock);
     }
 

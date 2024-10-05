@@ -7,8 +7,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
 public record RestMock(@JsonProperty("id") @Id String id,
-                       @JsonProperty("name") @Indexed(unique = true) String name,
                        @JsonProperty("type") String type,
+                       @JsonProperty("name") @Indexed(unique = true) String name,
                        @JsonProperty("httpMethod") String httpMethod,
                        @JsonProperty("url") String url,
                        @JsonProperty("response") String response,
@@ -18,7 +18,7 @@ public record RestMock(@JsonProperty("id") @Id String id,
                        @JsonProperty("statusCode") int statusCode,
                        @JsonProperty("destination") HostAndPort destination) implements ApiMock {
 
-    public static Builder builder(){
+    public static Builder builder() {
         return new Builder();
     }
 
@@ -109,7 +109,7 @@ public record RestMock(@JsonProperty("id") @Id String id,
             if (role == null) {
                 role = Role.SERVER.toString();
             }
-            if(periodicTrigger != null && this.periodicTrigger < 0){
+            if (periodicTrigger != null && this.periodicTrigger < 0) {
                 periodicTrigger = null;
             }
 

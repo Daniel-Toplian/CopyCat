@@ -99,40 +99,44 @@ public class ApiServiceTest {
     @Test
     void testAddNewServerApiMock() throws DataBaseOperationException, InvalidMockCreation {
         when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
+        when(mockRepository.add(apiMock)).thenReturn(apiMock);
         apiService.addApi(apiMock);
         verify(mockRepository, times(1)).add(apiMock);
     }
 
     @Test
     void testAddNewClientApiMock() throws DataBaseOperationException, InvalidMockCreation {
-        when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         ApiMock newMock = RestMock.builder().from(apiMock).role(Role.CLIENT.toString()).destination(new HostAndPort("localhost", 80)).build();
+        when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
+        when(mockRepository.add(newMock)).thenReturn(newMock);
         apiService.addApi(newMock);
         verify(mockRepository, times(1)).add(newMock);
     }
 
     @Test
     void testAddNewApiMockWithUpperCaseRole() throws DataBaseOperationException, InvalidMockCreation {
-        when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         ApiMock newMock = RestMock.builder().from(apiMock).role(Role.SERVER.toString().toUpperCase()).build();
+        when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
+        when(mockRepository.add(newMock)).thenReturn(newMock);
         apiService.addApi(newMock);
         verify(mockRepository, times(1)).add(newMock);
     }
 
     @Test
     void testAddNewApiMockWithLowerCaseHttpMethod() throws DataBaseOperationException, InvalidMockCreation {
-        when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
         ApiMock newMock = RestMock.builder().from(apiMock).httpMethod("get").build();
+        when(mockRepository.selectAll()).thenReturn(Collections.emptyList());
+        when(mockRepository.add(newMock)).thenReturn(newMock);
         apiService.addApi(newMock);
         verify(mockRepository, times(1)).add(newMock);
     }
 
     @Test
     void testAddNewApiMockWithSameUrlButDifferentRole() throws DataBaseOperationException, InvalidMockCreation {
-        when(mockRepository.selectAll()).thenReturn(List.of(apiMock));
-
         String newId = "newMockId";
         ApiMock newMock = RestMock.builder().from(apiMock).role(Role.CLIENT.toString()).destination(new HostAndPort("localhost", 8080)).id(newId).build();
+        when(mockRepository.selectAll()).thenReturn(List.of(apiMock));
+        when(mockRepository.add(newMock)).thenReturn(newMock);
         apiService.addApi(newMock);
         verify(mockRepository, times(1)).add(newMock);
     }
