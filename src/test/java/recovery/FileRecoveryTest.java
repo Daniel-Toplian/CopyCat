@@ -17,13 +17,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FileRecoveryTest {
 
     private static final Map<String, ApiMock> mockData = new HashMap<>();
+    private static final String RECOVERY_FILE_PATH = "src/test/test-recovery.json";
     private static FileRecovery fileRecovery;
     private static ObjectMapper objectMapper;
 
     @BeforeAll
     public static void setUp() {
         objectMapper = new ObjectMapper().registerModule(new Jdk8Module());
-        fileRecovery = new FileRecovery(objectMapper, "test-recovery.json");
+        fileRecovery = new FileRecovery(objectMapper, RECOVERY_FILE_PATH);
 
         ApiMock mock = RestMock.builder().id("mockId").name("test").url("/test").build();
         mockData.put(mock.id(), mock);
@@ -43,7 +44,7 @@ public class FileRecoveryTest {
 
     @Test
     public void testSetupRecoveryFile_FileExists() {
-        FileRecovery fileRecovery = new FileRecovery(objectMapper, "test-recovery.json");
+        FileRecovery fileRecovery = new FileRecovery(objectMapper, RECOVERY_FILE_PATH);
         assertNotNull(fileRecovery);
     }
 }
