@@ -1,16 +1,40 @@
 services:
+  copycat:
+    image: copycat
+    container_name: copycat
+    ports:
+      - 8080:8080
+    volumes:
+      - copycat_data:/data
+    environment:
+      EXPOSED_PORT: 8080
+      MONGODB_AUTH_DATABASE: admin
+      MONGODB_DATABASE: copycat
+      MONGODB_USERNAME: daniel
+      MONGODB_PASSWORD: toplian
+      MONGODB_HOST: mongodb
+      MONGODB_PORT: 27017
+      RECOVERY_TYPE: mongodb
+    networks:
+      - app_network
+    depends_on:
+      mongodb:
+        condition: service_healthy
   mongodb:
     image: mongo
     container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
-      - data:/data
+      - mongo_data:/data
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
     networks:
+      - app_network
       - mongodb_network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
   mongo-express:
     image: mongo-express
     container_name: mongo-express
@@ -26,6 +50,8 @@ services:
     networks:
       - mongodb_network
 volumes:
-  data: {}
+  copycat_data: {}
+  mongo_data: {}
 networks:
+  app_network: {}
   mongodb_network: {}
