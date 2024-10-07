@@ -43,6 +43,7 @@ public class ApiMockController {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(apiService.getAll());
         } catch (DataBaseOperationException e) {
+            LOGGER.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -54,17 +55,19 @@ public class ApiMockController {
             Optional<ApiMock> requestedMock = apiService.getById(id);
             return ResponseEntity.status(requestedMock.isPresent() ? HttpStatus.OK : HttpStatus.NOT_FOUND).body(requestedMock);
         } catch (DataBaseOperationException e) {
+            LOGGER.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @DeleteMapping(BASE_ROUTE_SUFFIX + "/{id}")
     public ResponseEntity<String> deleteMock(@PathVariable String id) {
-        LOGGER.debug("Received deleteMock request for id: %s".formatted(id));
+        LOGGER.info("Received deleteMock request for id: %s".formatted(id));
         try {
             apiService.deleteApi(id);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (DataBaseOperationException e) {
+            LOGGER.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -100,6 +103,7 @@ public class ApiMockController {
             apiService.triggerApiRequest(id);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (DataBaseOperationException e) {
+            LOGGER.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
@@ -111,6 +115,7 @@ public class ApiMockController {
             apiService.startPeriodicRequest(id);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (DataBaseOperationException e) {
+            LOGGER.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
