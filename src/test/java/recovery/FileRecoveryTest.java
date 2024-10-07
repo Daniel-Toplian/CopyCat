@@ -5,15 +5,16 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import copyCat.entities.ApiMock;
 import copyCat.entities.RestMock;
 import copyCat.recovery.FileRecovery;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class FileRecoveryTest {
 
     private static final Map<String, ApiMock> mockData = new HashMap<>();
@@ -30,21 +31,33 @@ public class FileRecoveryTest {
         mockData.put(mock.id(), mock);
     }
 
+    @AfterAll
+    public static void teardown() {
+        Path path = Path.of(RECOVERY_FILE_PATH);
+        if (path.toFile().exists()) {
+            path.toFile().delete();
+        }
+    }
+
     @Test
+    @Order(1)
     public void testSave_Success() throws Exception {
         CompletableFuture<Void> result = fileRecovery.save(mockData);
         assertNull(result.get());
     }
 
     @Test
+    @Order(2)
     public void testFetch_Success() throws Exception {
         CompletableFuture<Map<String, ApiMock>> result = fileRecovery.fetch();
         assertEquals(mockData, result.get());
     }
 
     @Test
-    public void testSetupRecoveryFile_FileExists() {
-        FileRecovery fileRecovery = new FileRecovery(objectMapper, RECOVERY_FILE_PATH);
-        assertNotNull(fileRecovery);
+    @Order(3)
+    public void testFetch_EmptyFile_Success() throws Exception {
+        Path.of(RECOVERY_FILE_PATH).toFile().delete();
+        CompletableFuture<Map<String, ApiMock>> result = fileRecovery.fetch();
+        assertEquals(new HashMap<>(), result.get());
     }
 }

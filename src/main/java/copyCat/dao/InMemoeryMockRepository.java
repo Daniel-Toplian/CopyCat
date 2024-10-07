@@ -25,7 +25,7 @@ public class InMemoeryMockRepository implements MockRepository {
     private HashMap<String, ApiMock> mocks;
 
     @Autowired
-    public InMemoeryMockRepository(Recovery recovery){
+    public InMemoeryMockRepository(Recovery recovery) {
         this.recovery = recovery;
         loadRecovery();
     }
@@ -80,7 +80,7 @@ public class InMemoeryMockRepository implements MockRepository {
         saveToRecovery();
     }
 
-    private void saveToRecovery(){
+    private void saveToRecovery() {
         try {
             recovery.save(mocks);
         } catch (Exception e) {

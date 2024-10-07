@@ -52,10 +52,13 @@ public class FileRecovery implements Recovery {
     @Override
     public CompletableFuture<Map<String, ApiMock>> fetch() {
         try {
-            HashMap<String,ApiMock> data = objectMapper.readValue(recoveryFile,
+            if (recoveryFile.length() == 0) {
+                return CompletableFuture.completedFuture(new HashMap<>());
+            }
+            HashMap<String, ApiMock> data = objectMapper.readValue(recoveryFile,
                     objectMapper.getTypeFactory().constructMapType(Map.class, String.class, ApiMock.class));
             return CompletableFuture.completedFuture(data);
-        } catch (Exception e){
+        } catch (Exception e) {
             return CompletableFuture.failedFuture(e);
         }
     }
@@ -66,7 +69,7 @@ public class FileRecovery implements Recovery {
         try {
             objectMapper.writeValue(recoveryFile, apiMocks);
             return CompletableFuture.completedFuture(null);
-        } catch (IOException e){
+        } catch (IOException e) {
             return CompletableFuture.failedFuture(e);
         }
     }
