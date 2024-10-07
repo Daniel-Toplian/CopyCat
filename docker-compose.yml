@@ -3,7 +3,7 @@ services:
     image: copycat
     container_name: copycat
     ports:
-      - 8080:8080
+      - "8080:8080"
     volumes:
       - copycat_data:/data
     environment:
@@ -49,9 +49,12 @@ services:
       - ME_CONFIG_MONGODB_URL=mongodb://root:root@mongodb:27017/admin
     networks:
       - mongodb_network
+    depends_on:
+      mongodb:
+        condition: service_healthy
 volumes:
-  copycat_data: {}
-  mongo_data: {}
+  copycat_data: { }
+  mongo_data: { }
 networks:
-  app_network: {}
-  mongodb_network: {}
+  app_network: { }
+  mongodb_network: { }
