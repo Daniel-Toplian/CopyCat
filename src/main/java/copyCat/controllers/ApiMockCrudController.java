@@ -25,15 +25,15 @@ import static copyCat.utils.Constants.BASE_ROUTE;
 /*
   This controller purpose is to handle CRUD operations including triggering requests as client
  */
-public class ApiMockController {
-    private final Logger LOGGER = LogManager.getLogger(ApiMockController.class);
+public class ApiMockCrudController {
+    private final Logger LOGGER = LogManager.getLogger(ApiMockCrudController.class);
     private final String REST_MOCK_SUFFIX = "rest";
     private final String GRAPH_QL_MOCK_SUFFIX = "graphql";
     private final String BASE_ROUTE_SUFFIX = "apiMock";
     private final ApiService apiService;
 
     @Autowired
-    public ApiMockController(ApiService apiService) {
+    public ApiMockCrudController(ApiService apiService) {
         this.apiService = apiService;
     }
 

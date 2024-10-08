@@ -40,6 +40,14 @@ public class ApiService {
         return DB.selectByUrl(url);
     }
 
+    public Optional<ApiMock> getServerSideApiMock(String url, String httpMethod, String body) throws DataBaseOperationException {
+        return DB.selectAll().stream()
+                .filter(apiMock -> Role.SERVER.toString().equals(apiMock.role())
+                        && url.equals(apiMock.url())
+                        && httpMethod.equals(apiMock.httpMethod())
+                        && (body.equals(apiMock.body()))).findFirst();
+    }
+
     public void addApi(ApiMock apiMock) throws DataBaseOperationException, InvalidMockCreation {
         validate(apiMock);
         if (isMockExists(apiMock)) {
@@ -94,9 +102,11 @@ public class ApiService {
 
     private boolean isMockExists(ApiMock apiMock) throws DataBaseOperationException {
         return DB.selectAll().stream()
-                .anyMatch(mock -> (mock.url().equals(apiMock.url()) &&
-                        mock.httpMethod().equals(apiMock.httpMethod())
-                        && mock.role().equals(apiMock.role()))
+                .anyMatch(mock -> (mock.url().equals(apiMock.url())
+                        && mock.httpMethod().equals(apiMock.httpMethod())
+                        && mock.role().equals(apiMock.role())
+                        && mock.body().equals(apiMock.body())
+                        && mock.response().equals(apiMock.response()))
                         || mock.id().equals(apiMock.id()));
     }
 

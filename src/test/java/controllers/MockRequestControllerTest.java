@@ -45,7 +45,7 @@ public class MockRequestControllerTest {
                 .statusCode(200)
                 .build();
 
-        Mockito.when(apiService.getByUrl(TEST_URL)).thenReturn(Optional.of(apiMock));
+        Mockito.when(apiService.getServerSideApiMock(apiMock.url(), apiMock.httpMethod(), apiMock.body())).thenReturn(Optional.of(apiMock));
 
         mockMvc.perform(MockMvcRequestBuilders.get(TEST_URL).accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().is(apiMock.statusCode()))
